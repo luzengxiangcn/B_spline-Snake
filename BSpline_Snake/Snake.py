@@ -18,7 +18,7 @@ class Contour_Extractor():
         self.fq_threshold = fq_threshold
         self.f_threshold = f_threshold
 
-    def fit_B_spline(self,image_GVF:GVF.GVF,
+    def fit_B_spline(self, image_GVF:GVF.GVF,
                      init_B_spline = None,second_loop_break_inspect_time = 10,verbose = True,image = None,verbose_interval = 1,
                      init_control_num = 4) ->B_spline.B_spline:
 
@@ -35,7 +35,7 @@ class Contour_Extractor():
                 init_points = np.asarray(center)  + np.asarray([[radius*math.cos(i/180*3.141),radius*math.sin(i/180*3.141)] for i in theta])
                 init_B_spline = B_spline.B_spline(init_points)
 
-        fq = init_B_spline.get_fq(image_GVF)
+        fq = init_B_spline.get_fq(image_GVF).transpose()
         verbose_start_time = time.time()
         Criterion = max([math.sqrt(i**2+j**2) for i,j in fq])
         if (verbose):
@@ -67,7 +67,7 @@ class Contour_Extractor():
                     plot.pause(0.0001)
 
             init_B_spline.reset_control_points(init_B_spline.control_points+fq*self.dt)
-            fq = init_B_spline.get_fq(image_GVF)
+            fq = init_B_spline.get_fq(image_GVF).transpose()
             Criterion = max([math.sqrt(i ** 2 + j ** 2) for i, j in fq])
             flag = Criterion>self.fq_threshold
             if not flag:

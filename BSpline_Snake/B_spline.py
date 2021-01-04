@@ -20,7 +20,7 @@ def get_sample_s(sample_size):
 
 def get_spline(M_rs: np.array, control_point):
 
-    assert control_point.shape == (4,2), "the number of control point should be 4"
+    assert control_point.shape == (4, 2), "the number of control point should be 4"
 
     return M_rs.dot(np.asarray(control_point))
 
@@ -81,8 +81,7 @@ class B_spline():
         if self.control_points is not None:
             self.get_sample_s()
 
-
-    def get_sample_s(self,constraint = None):
+    def get_sample_s(self, constraint=None):
         assert self.control_points is not None, 'Control points are not specified.'
         tot_num = len(self.control_points)
 
@@ -96,7 +95,6 @@ class B_spline():
             spline = get_spline(self.M_rs, self.control_points[piece_index])
             result.extend(spline.reshape([-1,2]))
             knots.extend(spline[0].reshape([-1,2]))
-
 
         self.sample_points = np.asarray(result)
         self.knots = np.asarray(knots)
@@ -178,7 +176,7 @@ class B_spline():
         else:
             return result_matrix_x, result_matrix_y
 
-    def get_fq(self,image_GVF:GVF.GVF,plotit=False):
+    def get_fq(self,image_GVF:GVF.GVF, plotit=False):
         sample_force_x, sample_force_y = self.get_sample_force(image_GVF)
         fq_list_x, fq_list_y = self.M_rs.transpose().dot(sample_force_x), self.M_rs.transpose().dot(sample_force_y)
 
@@ -192,7 +190,7 @@ class B_spline():
                 fq_x[q_num] += fq_list_x[rowi, coli]
                 fq_y[q_num] += fq_list_y[rowi, coli]
 
-        fq = np.asarray([fq_x, fq_y]).transpose()
+        fq = np.asarray([fq_x, fq_y])
         if plotit:
             f, ax = plot.subplots()
 
@@ -203,11 +201,11 @@ class B_spline():
             Y_f = image_GVF.V[X, Y]
             ax.quiver(X[skip], Y[skip], X_f[skip], Y_f[skip])
 
-            B_spline = self.sample_points.transpose()
+            B_spline = self.sample_points
             control_point_1 = self.control_points
             ax.plot(list(B_spline[0]) + [B_spline[0, 0]], list(B_spline[1]) + [B_spline[1, 0]])
             ax.plot(control_point_1[:, 0], control_point_1[:, 1], 'ro', )
-            for i, j in B_spline.transpose():
+            for i, j in B_spline:
                 force_ij = image_GVF.get_force(i, j)
                 ax.plot([i, i + 10 * force_ij[0]], [j, j + 10 * force_ij[1]], 'g')
 

@@ -122,7 +122,7 @@ class GVF_generator():
             lower_bound = mean_1 + stderr_1 * scipy.stats.norm.ppf(self.edge_threshold)
             gradient_magnitude = np.asarray(gradient_magnitude >lower_bound,dtype=np.float)*gradient_magnitude
         if visualization:
-            plot.imshow(gradient_magnitude,cmap='gray')
+            plot.imshow(gradient_magnitude.transpose(), cmap='gray')
             plot.title("Edge of Image")
             plot.show()
         return gradient_magnitude
